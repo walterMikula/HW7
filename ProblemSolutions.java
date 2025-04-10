@@ -33,10 +33,12 @@ public class ProblemSolutions {
     }
 
     public static void selectionSort(int[] values, boolean ascending ) {
-
+        // YOU CODE GOES HERE -- COMPLETE THE INNER LOOP OF THIS
+        // "SELECTION SORT" ALGORITHM.
+        // DO NOT FORGET TO ADD YOUR NAME / SECTION ABOVE
         int n = values.length;
 
-        for (int i = 0; i < n - 1; i++) {
+        for (int i = 0; i < n - 1; i++) { // Go through each number except the last one
             int index = i;
             for (int j = i+1; j < n; j++) {
                 if (ascending) {
@@ -44,7 +46,7 @@ public class ProblemSolutions {
                         index = j;
                     }
                 }
-                else {
+                else { // biggest to smallest
                     if (values[j] > values[index]) {
                         index = j;
                     }
@@ -53,11 +55,8 @@ public class ProblemSolutions {
             if (index != i) {
                 int temp = values[i];
                 values[i] = values[index];
-                values[index] = temp;
+                values[index] = temp; //should be in correct place
             }
-            // YOU CODE GOES HERE -- COMPLETE THE INNER LOOP OF THIS
-            // "SELECTION SORT" ALGORITHM.
-            // DO NOT FORGET TO ADD YOUR NAME / SECTION ABOVE
         }
 
     } // End class selectionSort
@@ -117,40 +116,49 @@ public class ProblemSolutions {
         // ALLOCATES AUXILIARY DATA STRUCTURES (TEMPORARY ARRAYS). IT WILL BE EASIER
         // TO CODE WITH A SPACE COMPLEXITY OF O(N LOG N), WHICH IS FINE FOR PURPOSES
         // OF THIS PROGRAMMING EXERCISES.
+        int n1 = mid - left + 1; // left side
+        int n2 = right - mid; //right side
 
-        int[] temp = new int[right - left + 1];
-        int i = left;
-        int j = mid + 1;
-        int idx = 0;
+        int[] leftArr = new int[n1]; //arrays for each side
+        int[] rightArr = new int[n2];
 
-        while (i <= mid && j <= right) {
-            if (arr[i] <= arr[j]) {
-                temp[idx++] = arr[i++];
-            }
-            else {
-                temp[idx++] = arr[j++];
-            }
+        for (int i = 0; i < n1; i++) { //puts elements into those arrays
+            leftArr[i] = arr[left + i];
         }
-        while (i <= mid) {
-            temp[idx++] = arr[i++];
+        for (int j = 0; j < n2; j++) {
+            rightArr[j] = arr[mid + 1 + j];
         }
 
-        while (j <= right) {
-            temp[idx++] = arr[j++];
-        }
-        idx = left;
-        for (int z = 0; z < temp.length; z++) {
-            if (temp[z] % k == 0) {
-                arr[idx++] = temp[z];
-            }
-        }
-        for (int z = 0; z < temp.length; z++) {
-            if (temp[z] % k != 0) {
-                arr[idx++] = temp[z];
+        int i = 0, j = 0, kIndex = left; //where to place the number ini the original array
+
+        while (i < n1 && j < n2) { // if they are divisible by k add them to the array and move the index foeward
+            if (leftArr[i] % k == 0) {
+                arr[kIndex++] = leftArr[i++];
+            } else if (rightArr[j] % k == 0) {
+                arr[kIndex++] = rightArr[j++];
+            } else {
+                if (leftArr[i] < rightArr[j]) { //for not being divisible by k
+                    arr[kIndex++] = leftArr[i++];
+                } else {
+                    arr[kIndex++] = rightArr[j++];
+                }
             }
         }
 
+        while (i < n1) { //copies the one that are left(not divisible by k)
+            arr[kIndex++] = leftArr[i++];
+        }
+
+        while (j < n2) {
+            arr[kIndex++] = rightArr[j++];
+        }
     }
+
+
+
+
+
+
 
 
     /**
@@ -201,12 +209,12 @@ public class ProblemSolutions {
     public static boolean asteroidsDestroyed(int mass, int[] asteroids) {
 
         // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT()
-        Arrays.sort(asteroids);
+        Arrays.sort(asteroids); //sorts them in increasing mass
         for (int i = 0; i < asteroids.length; i++) {
             if (mass < asteroids[i]) {
-                return false;
+                return false; //fail to destroy the asteroid
             } else {
-                mass += asteroids[i];
+                mass += asteroids[i];// planet adds the mass of the asteroid
             }
         }
 
@@ -246,22 +254,20 @@ public class ProblemSolutions {
     public static int numRescueSleds(int[] people, int limit) {
 
         // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT
-        Arrays.sort(people);
-        // track who's already placed
-        boolean[] usedOrNah = new boolean[people.length];
+        Arrays.sort(people); //sorts the people
+        boolean[] usedOrNah = new boolean[people.length];// see if previoiusly used
         int sledCount = 0;
 
         for (int i = 0; i < people.length; i++) {
             if (usedOrNah[i]) continue;
-            // mark current person as placed
             usedOrNah[i] = true;
 
-            if (people[i] == limit) {
-                sledCount++; // goes alone without some one else
+            if (people[i] == limit) { //for too heavy
+                sledCount++; //adds a sled
             } else {
                 boolean paired = false;
 
-                for (int j = people.length - 1; j > i; j--) {
+                for (int j = people.length - 1; j > i; j--) { //looking for peole to add to teh back od the sled
                     if (!usedOrNah[j] && people[i] + people[j] <= limit) {
                         usedOrNah[j] = true;
                         paired = true;
@@ -269,12 +275,9 @@ public class ProblemSolutions {
                     }
                 }
 
-                sledCount++; // either paired or alone
+                sledCount++;
             }
         }
         return sledCount;
-
     }
-
 } // End Class ProblemSolutions
-
