@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Walter Mikula / COMP 272 002
  *
  *   This java file contains the problem solutions for the methods selectionSort,
  *   mergeSortDivisibleByKFirst, asteroidsDestroyed, and numRescueCanoes methods.
@@ -37,11 +37,27 @@ public class ProblemSolutions {
         int n = values.length;
 
         for (int i = 0; i < n - 1; i++) {
-
+            int index = i;
+            for (int j = i+1; j < n; j++) {
+                if (ascending) {
+                    if (values[j] < values[index]) {
+                        index = j;
+                    }
+                }
+                else {
+                    if (values[j] > values[index]) {
+                        index = j;
+                    }
+                }
+            }
+            if (index != i) {
+                int temp = values[i];
+                values[i] = values[index];
+                values[index] = temp;
+            }
             // YOU CODE GOES HERE -- COMPLETE THE INNER LOOP OF THIS
             // "SELECTION SORT" ALGORITHM.
             // DO NOT FORGET TO ADD YOUR NAME / SECTION ABOVE
-
         }
 
     } // End class selectionSort
@@ -102,7 +118,37 @@ public class ProblemSolutions {
         // TO CODE WITH A SPACE COMPLEXITY OF O(N LOG N), WHICH IS FINE FOR PURPOSES
         // OF THIS PROGRAMMING EXERCISES.
 
-        return;
+        int[] temp = new int[right - left + 1];
+        int i = left;
+        int j = mid + 1;
+        int idx = 0;
+
+        while (i <= mid && j <= right) {
+            if (arr[i] <= arr[j]) {
+                temp[idx++] = arr[i++];
+            }
+            else {
+                temp[idx++] = arr[j++];
+            }
+        }
+        while (i <= mid) {
+            temp[idx++] = arr[i++];
+        }
+
+        while (j <= right) {
+            temp[idx++] = arr[j++];
+        }
+        idx = left;
+        for (int z = 0; z < temp.length; z++) {
+            if (temp[z] % k == 0) {
+                arr[idx++] = temp[z];
+            }
+        }
+        for (int z = 0; z < temp.length; z++) {
+            if (temp[z] % k != 0) {
+                arr[idx++] = temp[z];
+            }
+        }
 
     }
 
@@ -155,11 +201,18 @@ public class ProblemSolutions {
     public static boolean asteroidsDestroyed(int mass, int[] asteroids) {
 
         // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT()
+        Arrays.sort(asteroids);
+        for (int i = 0; i < asteroids.length; i++) {
+            if (mass < asteroids[i]) {
+                return false;
+            } else {
+                mass += asteroids[i];
+            }
+        }
 
-        return false;
+        return true;
 
     }
-
 
     /**
      * Method numRescueSleds
@@ -193,8 +246,33 @@ public class ProblemSolutions {
     public static int numRescueSleds(int[] people, int limit) {
 
         // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT
+        Arrays.sort(people);
+        // track who's already placed
+        boolean[] usedOrNah = new boolean[people.length];
+        int sledCount = 0;
 
-        return -1;
+        for (int i = 0; i < people.length; i++) {
+            if (usedOrNah[i]) continue;
+            // mark current person as placed
+            usedOrNah[i] = true;
+
+            if (people[i] == limit) {
+                sledCount++; // goes alone without some one else
+            } else {
+                boolean paired = false;
+
+                for (int j = people.length - 1; j > i; j--) {
+                    if (!usedOrNah[j] && people[i] + people[j] <= limit) {
+                        usedOrNah[j] = true;
+                        paired = true;
+                        break;
+                    }
+                }
+
+                sledCount++; // either paired or alone
+            }
+        }
+        return sledCount;
 
     }
 
